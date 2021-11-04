@@ -11,7 +11,7 @@ namespace CodeTest
         /// <summary>
         /// Base
         /// </summary>
-        None = 0x1,
+        Refresh = 0x1,
         /// <summary>
         /// Exit application
         /// </summary>
@@ -52,6 +52,10 @@ namespace CodeTest
         /// Prints current application info
         /// </summary>
         ViewApplication = 0x400,
+        /// <summary>
+        /// Removes existing attachment
+        /// </summary>
+        RemoveAttachment = 0x800
 
     }
 }

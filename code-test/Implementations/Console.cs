@@ -125,6 +125,10 @@ namespace CodeTest
                     int selection = 0;
                     if (!int.TryParse(value, out selection))
                         continue;
+
+                    if (selection < 0 || selection > options.Count)
+                        continue;
+
                     return (int)Enum.Parse(enumType, options[selection - 1]);
                 }
                 while (true);

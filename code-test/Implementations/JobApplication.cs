@@ -16,10 +16,10 @@ namespace CodeTest
         private bool IsRegistered => !string.IsNullOrEmpty(_appKey);
         public bool IsInitialized => !string.IsNullOrEmpty(_userKey);
 
-        private Operations NotRegistered => Operations.None | Operations.Exit | Operations.Register;
-        private Operations NotApplied => Operations.None | Operations.Exit | Operations.AddAttachment |
+        private Operations NotRegistered => Operations.Refresh | Operations.Exit | Operations.Register;
+        private Operations NotApplied => Operations.Refresh | Operations.Exit | Operations.AddAttachment |
             Operations.DeleteApplication | Operations.MakeApplication | Operations.Update |
-            Operations.UpdateMetadata | Operations.UploadAttachment | Operations.ViewApplication;
+            Operations.UpdateMetadata | Operations.UploadAttachment | Operations.ViewApplication | Operations.RemoveAttachment;
 
         #endregion
 
@@ -128,7 +128,18 @@ namespace CodeTest
             if (!IsRegistered)
                 throw new InvalidOperationException("Application has not been registered, nothing to update");
 
-            throw new NotImplementedException();
+            // password has to match so it cannot be updated
+            var model = _console.InputObject(new { email = "", name = "", phone = "" });
+
+            // these two does not come from console so we need to add
+            model.Add("applicationKey", _appKey);
+            model.Add("password", _password);
+
+            var request = _client.PUT("/api/v1/application/update");
+            request.AddHeader("X-Recruitment-Api-Key", _userKey);
+            request.AddJsonBodyParameter(model);
+            var response = request.Execute<UserKeyApiResponseObject>();
+            HandleResponse(response);
 
             return NotApplied;
         }
@@ -138,7 +149,18 @@ namespace CodeTest
             if (!IsRegistered)
                 throw new InvalidOperationException("Application has not been registered, nothing to update");
 
-            throw new NotImplementedException();
+            // password has to match so it cannot be updated
+            var model = _console.InputObject(new { seniority = Seniority.Beginner, role = Role.Developer, area = Area.FullStack });
+
+            // these two does not come from console so we need to add
+            model.Add("applicationKey", _appKey);
+            model.Add("password", _password);
+
+            var request = _client.PUT("/api/v1/application/updatemetadata");
+            request.AddHeader("X-Recruitment-Api-Key", _userKey);
+            request.AddJsonBodyParameter(model);
+            var response = request.Execute<ApiResponseObject>();
+            HandleResponse(response);
 
             return NotApplied;
         }
@@ -148,7 +170,39 @@ namespace CodeTest
             if (!IsRegistered)
                 throw new InvalidOperationException("Application has not been registered, nothing to update");
 
-            throw new NotImplementedException();
+            _console.Log(ConsoleColor.Yellow, "Warning! System does not allow same type document again and gives InternalError. Codetest shall NOT do this check.\n");
+            var model = _console.InputObject(new { docType = DocType.Code, link = "" });
+
+            // these two does not come from console so we need to add
+            model.Add("applicationKey", _appKey);
+            model.Add("password", _password);
+
+            var request = _client.POST("/api/v1/attachment/addlink");
+            request.AddHeader("X-Recruitment-Api-Key", _userKey);
+            request.AddJsonBodyParameter(model);
+            var response = request.Execute<ApiResponseObject>();
+            HandleResponse(response);
+
+            return NotApplied;
+        }
+
+        public Operations RemoveAttachment()
+        {
+            if (!IsRegistered)
+                throw new InvalidOperationException("Application has not been registered, nothing to update");
+
+            _console.Log(ConsoleColor.Yellow, "Warning! System canont remove something that does not exist so an existing document type must be entered. Codetest shall NOT do this check.\n");
+            var model = _console.InputObject(new { docType = DocType.Code});
+
+            // these two does not come from console so we need to add
+            model.Add("applicationKey", _appKey);
+            model.Add("password", _password);
+
+            var request = _client.DELETE("/api/v1/attachment/remove");
+            request.AddHeader("X-Recruitment-Api-Key", _userKey);
+            request.AddJsonBodyParameter(model);
+            var response = request.Execute<ApiResponseObject>();
+            HandleResponse(response);
 
             return NotApplied;
         }
@@ -209,7 +263,12 @@ namespace CodeTest
                     // I have done something similar in one of my own applications and it works perfectly there so I applied same pattern
                     switch (next)
                     {
-                        // ads new attachment
+                        // removes attachment
+                        case Operations.RemoveAttachment:
+                            nextSteps = RemoveAttachment();
+                            break;
+
+                        // adds new attachment
                         case Operations.AddAttachment:
                             nextSteps = AddAttachment();
                             break;
@@ -259,7 +318,7 @@ namespace CodeTest
                             return;
 
                         // endless loop
-                        case Operations.None:
+                        case Operations.Refresh:
                         default:
                             _console.Clear();
                             continue;

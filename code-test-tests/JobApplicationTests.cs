@@ -34,7 +34,7 @@ namespace CodeTestTests
 
             // assert
             Assert.IsTrue(jobApp.IsInitialized, "Initialize should have succeeded");
-            Assert.AreEqual(nextSteps, Operations.Exit | Operations.None | Operations.Register, "Initialize messed up next steps");
+            Assert.AreEqual(nextSteps, Operations.Exit | Operations.Refresh | Operations.Register, "Initialize messed up next steps");
             Assert.AreEqual("123asd", jobApp.UserKey, "Initialize messed up and did not get proper user key");
         }
 
