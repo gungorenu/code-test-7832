@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 
 namespace CodeTest
 {
@@ -43,14 +44,38 @@ namespace CodeTest
         /// Reads a string value from console
         /// </summary>
         /// <param name="message">Message as description</param>
-        /// <returns>Read string vlaue</returns>
+        /// <returns>Read string value</returns>
         string ReadValue(string message);
 
         /// <summary>
         /// Reads an enum value from console
         /// </summary>
         /// <param name="message">Message as description</param>
-        /// <returns>Read string vlaue</returns>
+        /// <returns>Read string value</returns>
         string ReadEnumValue<T>(string message) where T : struct, IConvertible;
+
+
+        /// <summary>
+        /// Reads a flags type enum value from console
+        /// </summary>
+        /// <param name="message">Message as description</param>
+        /// <param name="enum">Enum value itself</param>
+        /// <param name="enumType">Enum type (must be int based)</param>
+        /// <returns>Read string value</returns>
+        int ReadFlagsEnumValue(string message, Type enumType, int @enum);
+
+        /// <summary>
+        /// Prints json object to console
+        /// </summary>
+        /// <param name="obj">Json object</param>
+        /// <param name="indent">indentation for recursiveness</param>
+        void Print(JObject obj, int indent = 0);
+
+        /// <summary>
+        /// Re-Reads given dynamic object from console
+        /// </summary>
+        /// <param name="metadata">Dynamic object (for understanding data structure)</param>
+        /// <returns>Json object back for simple serialization</returns>
+        JObject InputObject(object metadata);
     }
 }

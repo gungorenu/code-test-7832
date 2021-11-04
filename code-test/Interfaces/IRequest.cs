@@ -34,5 +34,13 @@
         /// <typeparam name="T">Response data type</typeparam>
         /// <returns>Response object</returns>
         T Execute<T>() where T : ApiResponseObject, new();
+
+        /// <summary>
+        /// Executes the request and returns the response data
+        /// </summary>
+        /// <typeparam name="T">Response data type</typeparam>
+        /// <param name="responseContent">Response back in parameter</param>
+        /// <returns>Response object</returns>
+        T Execute<T>(out string responseContent) where T : ApiResponseObject, new();
     }
 }
