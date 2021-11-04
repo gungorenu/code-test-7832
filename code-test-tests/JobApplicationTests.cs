@@ -20,7 +20,7 @@ namespace CodeTestTests
             Mock<IRequest> requestMock = new Mock<IRequest>();
 
             var model = new Newtonsoft.Json.Linq.JObject();
-            var response = new UserKeyApiResponseObject() { UserKey = "123asd" };
+            var response = new UserKeyApiResponseObject() { UserKey = "123asd", Status = true };
 
             consoleMock.Setup(f => f.InputObject(It.IsAny<object>())).Returns(model);
             clientMock.Setup(f => f.POST(It.IsAny<string>())).Returns(requestMock.Object);
