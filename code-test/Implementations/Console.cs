@@ -117,15 +117,13 @@ namespace CodeTest
                         if ( (flag & @enum) == flag)
                         {
                             options.Add(enums[i]);
-                            System.Console.Write("[ {0} ] {1}\n", i + 1, enums[i]);
+                            System.Console.Write("[ {0} ] {1}\n", options.Count, enums[i]);
                         }
                     }
 
                     string value = System.Console.ReadLine();
                     int selection = 0;
                     if (!int.TryParse(value, out selection))
-                        continue;
-                    if (selection < 1 || selection > options.Count)
                         continue;
                     return (int)Enum.Parse(enumType, options[selection - 1]);
                 }

@@ -6,6 +6,14 @@
     public interface IJobApplication
     {
         /// <summary>
+        /// Runs message loop inside the JobApplication. exits when user opts to
+        /// </summary>
+        void Run();
+
+        // SELF NOTE: since I moved run flow into class itself (instead of Program), below are not necessary anymore, can be gladly deleted
+        // I leave for showcase purposes
+
+        /// <summary>
         /// Is job application system initialized
         /// </summary>
         public bool IsInitialized { get; }
@@ -65,6 +73,9 @@
         Operations ViewApplication();
     }
 
+    /// <summary>
+    /// This interface is only supposed to be used in testing, hence it is "Internal"
+    /// </summary>
     internal interface IJobApplicationInternal : IJobApplication
     {
         string UserKey { get; }
