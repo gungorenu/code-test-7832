@@ -6,7 +6,13 @@ namespace CodeTest
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            IConsole console = new Console();
+
+
+
+
+
+            console.Log(ConsoleColor.Green, "Hello World!");
         }
     }
 }
