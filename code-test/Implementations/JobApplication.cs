@@ -16,6 +16,7 @@ namespace CodeTest
         private bool IsRegistered => !string.IsNullOrEmpty(_appKey);
         public bool IsInitialized => !string.IsNullOrEmpty(_userKey);
 
+        private Operations NotInitialized => Operations.Refresh | Operations.Exit | Operations.GenerateKey;
         private Operations NotRegistered => Operations.Refresh | Operations.Exit | Operations.Register;
         private Operations NotApplied => Operations.Refresh | Operations.Exit | Operations.AddAttachment |
             Operations.DeleteApplication | Operations.MakeApplication | Operations.Update |
@@ -77,7 +78,8 @@ namespace CodeTest
             if (response.Status)
             {
                 _appKey = null;
-                return NotRegistered;
+                _userKey = null;
+                return NotInitialized;
             }
             else return NotApplied;
         }
@@ -339,10 +341,10 @@ namespace CodeTest
                             nextSteps = ViewApplication();
                             break;
 
-                        // this step is not allowed here, just giving error message
+                        // application requires a new userkey after application is done so I re-initialize
                         case Operations.GenerateKey:
-                            _console.Error("Generate key is not a valid options. Try again and report the bug to developer...\n");
-                            continue;
+                            nextSteps = Initialize();
+                            break;
 
                         // exit application
                         case Operations.Exit:
