@@ -51,9 +51,21 @@ namespace CodeTest
                 return this;
             }
 
+            public IRequest AddQueryParameter(string name, object value)
+            {
+                Request.AddParameter(name, value, ParameterType.UrlSegment);
+                return this;
+            }
+
             public IRequest AddJsonBodyParameter(object value)
             {
                 Request.AddJsonBody(value, "application/json");
+                return this;
+            }
+
+            public IRequest AddFile(string name, string fileName, string contentType, byte[] value)
+            {
+                Request.AddFileBytes(name, value, fileName, contentType);
                 return this;
             }
 

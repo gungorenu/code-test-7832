@@ -212,7 +212,38 @@ namespace CodeTest
             if (!IsRegistered)
                 throw new InvalidOperationException("Application has not been registered, nothing to update");
 
-            throw new NotImplementedException();
+            string filePath = _console.ReadValue("Enter a path for a file to upload: \n");
+            try
+            {
+                if (!System.IO.File.Exists(filePath))
+                {
+                    _console.Log(ConsoleColor.Yellow, "File does not exist");
+                    return NotApplied;
+                }
+
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(filePath);
+                string extension = System.IO.Path.GetExtension(filePath);
+                byte[] data = System.IO.File.ReadAllBytes(filePath);
+
+                string docType = _console.ReadEnumValue<DocType>("What is type of the document to upload? ");
+
+                var request = _client.POST("/api/v1/attachment/upload/{extension}/{applicationKey}/{password}/{docType}");
+                request.AddHeader("X-Recruitment-Api-Key", _userKey);
+                
+                // API says they are in query
+                request.AddQueryParameter("applicationKey", _appKey);
+                request.AddQueryParameter("password", _password);
+
+                request.AddQueryParameter("extension", extension);
+                request.AddQueryParameter("docType", docType);
+                request.AddFile("file", fileName, "application/" + extension, data);
+                var response = request.Execute<ApiResponseObject>();
+                HandleResponse(response);
+            }
+            catch
+            {
+                _console.Log(ConsoleColor.Yellow, "File path could not be reached or file could not be read");
+            }
 
             return NotApplied;
         }

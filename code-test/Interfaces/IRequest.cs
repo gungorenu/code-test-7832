@@ -29,6 +29,24 @@
         IRequest AddJsonBodyParameter(object value);
 
         /// <summary>
+        /// Adds a parameter into Query (Url Segment)
+        /// </summary>
+        /// <param name="name">Parameter name</param>
+        /// <param name="value">Parameter value</param>
+        /// <returns>Request instance back</returns>
+        IRequest AddQueryParameter(string name, object value);
+
+        /// <summary>
+        /// Adds a file content to request (to upload a file for example)
+        /// </summary>
+        /// <param name="name">Parameter name</param>
+        /// <param name="fileName">File name (not path)</param>
+        /// <param name="contentType">Content type (extension)</param>
+        /// <param name="value">File data (warning! no size limit)</param>
+        /// <returns>Request instance back</returns>
+        IRequest AddFile(string name, string fileName, string contentType, byte[] value);
+
+        /// <summary>
         /// Executes the request and returns the response data
         /// </summary>
         /// <typeparam name="T">Response data type</typeparam>
